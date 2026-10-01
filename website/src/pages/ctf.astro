@@ -1,0 +1,275 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { ctfs, events } from '../data/ctf';
+import { href } from '../lib/url';
+---
+
+<BaseLayout
+  title="CTFs & events"
+  description="Capture-the-flag competitions and security events Shavi Saini has taken part in, recorded factually: UNI6CTF 1.0, ZeroDay Heist 2026, HackZero'26, CREST CTF 2026, and the Central University of Haryana AI and Cyber Security conclave."
+  page="ctf"
+>
+  <div class="page page--narrow">
+    <PageHeader
+      eyebrow="Participation"
+      title="CTFs & events"
+      lede="Four competitions and one conclave. Where an organiser published a placing it is shown; where they issued a participation certificate and nothing more, that is what this page says."
+    />
+
+    <section aria-labelledby="ctf-heading">
+      <h2 id="ctf-heading" class="section-title">Capture the flag</h2>
+      <ul class="entries">
+        {
+          ctfs.map((ctf, index) => (
+            <li class="entry lift" data-reveal style={`--reveal-delay: ${index * 70}ms`}>
+              <div class="entry__main">
+                <h3 class="entry__name">{ctf.event}</h3>
+                <p class="entry__organiser">{ctf.organiser}</p>
+                <p class="entry__facts mono">
+                  <span>{ctf.date}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{ctf.format}</span>
+                  {ctf.team && (
+                    <>
+                      <span aria-hidden="true">·</span>
+                      <span>Team {ctf.team}</span>
+                    </>
+                  )}
+                </p>
+              </div>
+
+              <div class="entry__side">
+                <p
+                  class:list={[
+                    'entry__result',
+                    ctf.result.startsWith('Rank') && 'entry__result--placed',
+                  ]}
+                >
+                  {ctf.result}
+                </p>
+                <p class="entry__links">
+                  <a href={href(ctf.file)} rel="noopener noreferrer" target="_blank">
+                    Certificate
+                  </a>
+                  {ctf.verify && (
+                    <a href={ctf.verify} rel="noopener noreferrer" target="_blank">
+                      Verify
+                    </a>
+                  )}
+                </p>
+                {ctf.credentialId && <p class="entry__id mono">{ctf.credentialId}</p>}
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="note">
+        No flags, challenge solutions or infrastructure details from these events appear on
+        this site. Write-ups will be published here only where the organiser permits it.
+      </p>
+    </section>
+
+    <section aria-labelledby="events-heading">
+      <h2 id="events-heading" class="section-title">Events</h2>
+      {
+        events.map((event) => (
+          <article class="event lift" data-reveal>
+            <h3 class="entry__name">{event.name}</h3>
+            <p class="entry__organiser">{event.organiser}</p>
+            <p class="entry__facts mono">{event.date}</p>
+            <p class="event__summary">{event.summary}</p>
+            <ul class="event__roles">
+              {event.roles.map((role) => (
+                <li>
+                  <span class="event__role">{role.role}</span>
+                  <span class="event__detail">{role.detail}</span>
+                  <a href={href(role.file)} rel="noopener noreferrer" target="_blank">
+                    Certificate
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  section + section {
+    margin-top: var(--space-8);
+  }
+
+  section:last-of-type {
+    padding-bottom: var(--space-8);
+  }
+
+  .section-title {
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--line);
+    font-size: 1rem;
+  }
+
+  .entries {
+    display: grid;
+    gap: var(--space-3);
+    list-style: none;
+    margin: var(--space-4) 0 0;
+    padding: 0;
+  }
+
+  .entry {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--bg-raised);
+  }
+
+  .entry__main {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .entry__name {
+    font-size: 1.05rem;
+  }
+
+  .entry__organiser {
+    color: var(--text-muted);
+    font-size: 0.89rem;
+  }
+
+  .entry__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    color: var(--text-faint);
+  }
+
+  .entry__side {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+  }
+
+  .entry__result {
+    font-size: 0.86rem;
+    color: var(--text-faint);
+  }
+
+  .entry__result--placed {
+    justify-self: start;
+    padding: 0.28rem 0.55rem;
+    border: 1px solid var(--accent-line);
+    border-radius: var(--radius-sm);
+    background: var(--accent-wash);
+    color: var(--accent-strong);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.02em;
+  }
+
+  .entry__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    font-size: 0.84rem;
+  }
+
+  .entry__id {
+    font-size: 0.68rem;
+    color: var(--text-faint);
+  }
+
+  .note {
+    max-width: 68ch;
+    margin-top: var(--space-5);
+    font-size: 0.84rem;
+    line-height: 1.65;
+    color: var(--text-faint);
+  }
+
+  /* ---------------------------------------------------------------- event */
+
+  .event {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--bg-raised);
+  }
+
+  .event__summary {
+    max-width: 68ch;
+    margin-top: var(--space-2);
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+
+  .event__roles {
+    display: grid;
+    gap: 1px;
+    margin-top: var(--space-3);
+    padding: 0;
+    list-style: none;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .event__roles li {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    background: var(--bg-raised);
+    font-size: 0.87rem;
+  }
+
+  .event__role {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .event__detail {
+    color: var(--text-muted);
+  }
+
+  .event__roles a {
+    font-size: 0.84rem;
+    justify-self: start;
+  }
+
+  @media (min-width: 46rem) {
+    .entry {
+      grid-template-columns: minmax(0, 1fr) 13rem;
+      gap: var(--space-6);
+      align-items: start;
+    }
+
+    .entry__side {
+      justify-items: end;
+      text-align: right;
+    }
+
+    .entry__result--placed {
+      justify-self: end;
+    }
+
+    .event__roles li {
+      grid-template-columns: 8rem minmax(0, 1fr) auto;
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+  }
+</style>

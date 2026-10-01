@@ -1,0 +1,70 @@
+---
+interface Props {
+  href: string;
+  variant?: 'solid' | 'ghost';
+  external?: boolean;
+  rel?: string;
+}
+
+const { href, variant = 'ghost', external = false, rel } = Astro.props;
+const computedRel = rel ?? (external ? 'noopener noreferrer' : undefined);
+const target = external ? '_blank' : undefined;
+---
+
+<a class:list={['button', `button--${variant}`]} href={href} rel={computedRel} target={target}>
+  <slot />
+  {
+    external && (
+      <svg class="button__out" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true">
+        <path
+          d="M4 2h6v6M10 2 2.5 9.5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    )
+  }
+</a>
+
+<style>
+  .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.55rem 1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--line-strong);
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background-color var(--duration-fast) var(--ease),
+      border-color var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+  }
+
+  .button--solid {
+    background: var(--accent-wash);
+    border-color: var(--accent-line);
+    color: var(--accent-strong);
+  }
+
+  .button--solid:hover {
+    background: color-mix(in srgb, var(--accent-wash) 60%, var(--surface-hover));
+    border-color: var(--accent);
+  }
+
+  .button--ghost {
+    background: transparent;
+    color: var(--text-muted);
+  }
+
+  .button--ghost:hover {
+    color: var(--text);
+    background: var(--surface-hover);
+  }
+
+  .button__out {
+    opacity: 0.7;
+  }
+</style>

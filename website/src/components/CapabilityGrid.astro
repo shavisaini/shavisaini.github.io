@@ -1,0 +1,136 @@
+---
+import type { Capability } from '../data/netra';
+
+interface Props {
+  items: readonly Capability[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="caps" data-caps>
+  {
+    items.map((item) => (
+      <li class="cap">
+        <h3 class="cap__name">{item.name}</h3>
+        <p class="cap__summary">{item.summary}</p>
+        <p class="cap__limit">
+          <span class="cap__limit-label mono">Does not claim</span>
+          {item.notClaimed}
+        </p>
+      </li>
+    ))
+  }
+</ul>
+
+<script>
+  /*
+   * Ambient pointer highlight. Purely decorative, so it is only wired up for a
+   * precise pointer on a reader who has not asked for less motion, and the
+   * cards are fully styled without it.
+   */
+  const grid = document.querySelector<HTMLElement>('[data-caps]');
+  const wanted =
+    matchMedia('(hover: hover) and (pointer: fine)').matches &&
+    !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (grid && wanted) {
+    grid.dataset.lit = 'on';
+    grid.addEventListener('pointermove', (event) => {
+      const card = (event.target as HTMLElement).closest<HTMLElement>('.cap');
+      if (!card) return;
+      const box = card.getBoundingClientRect();
+      card.style.setProperty('--x', `${event.clientX - box.left}px`);
+      card.style.setProperty('--y', `${event.clientY - box.top}px`);
+    });
+  }
+</script>
+
+<style>
+  .caps {
+    display: grid;
+    gap: var(--space-3);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cap {
+    position: relative;
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--bg-raised) 72%, transparent);
+    overflow: hidden;
+  }
+
+  /* Follows the pointer. Hidden until the script opts the grid in. */
+  .cap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background: radial-gradient(
+      14rem 14rem at var(--x, 50%) var(--y, 50%),
+      color-mix(in srgb, var(--accent) 13%, transparent),
+      transparent 70%
+    );
+    transition: opacity 260ms var(--ease);
+    pointer-events: none;
+  }
+
+  [data-lit='on'] .cap:hover::before {
+    opacity: 1;
+  }
+
+  .cap > * {
+    position: relative;
+  }
+
+  .cap__name {
+    font-size: 0.97rem;
+  }
+
+  .cap__summary {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .cap__limit {
+    display: grid;
+    gap: 0.2rem;
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--line);
+    color: var(--text-faint);
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+
+  .cap__limit-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sev-medium);
+  }
+
+  @media (min-width: 46rem) {
+    .caps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .caps {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cap::before {
+      transition: none;
+    }
+  }
+</style>

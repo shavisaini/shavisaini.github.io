@@ -1,0 +1,393 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../site.config';
+import { href } from '../lib/url';
+import { certificates } from '../data/certificates';
+import { skills, practice, education } from '../data/about';
+import { ctfs } from '../data/ctf';
+---
+
+<BaseLayout
+  title="Resume"
+  description="Resume of Shavi Saini — cybersecurity and ethical hacking. Experience, certificates, projects, lab practice and education."
+  page="resume"
+>
+  <div class="page page--narrow resume">
+    <div class="resume__sheet">
+    <header class="resume__header" data-reveal>
+      <div>
+        <h1>Shavi Saini</h1>
+        <p class="resume__role">Cybersecurity · Ethical hacking · Network and web security</p>
+      </div>
+      <ul class="resume__contact">
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li>
+          <a href={site.links.linkedin} rel="noopener noreferrer" target="_blank">
+            linkedin.com/in/shavisaini
+          </a>
+        </li>
+        <li>{site.location}</li>
+      </ul>
+    </header>
+
+    <p class="resume__note no-print" data-reveal>
+      This is the resume as a web page rather than a download, so that it stays current and so
+      that my phone number and home address are not published. Use your browser's print or
+      save-as-PDF command for a copy, or email me and I will send one.
+    </p>
+
+    <section class="resume__section" data-reveal>
+      <h2>Summary</h2>
+      <p>
+        Computer Science Engineering student working in cybersecurity, with hands-on practice
+        in network traffic analysis, penetration testing fundamentals, vulnerability
+        assessment and web and API security. Sole author of NETRA, a passive network threat
+        analytics prototype built for Smart India Hackathon 2026, which reports on eight
+        categories of network behaviour and attaches the supporting evidence — and the limit
+        of the claim — to every alert it raises. Comfortable working from attacker methodology
+        and from defensive telemetry, and careful about the difference between what a result
+        shows and what it proves.
+      </p>
+    </section>
+
+    <section class="resume__section" data-reveal>
+      <h2>Experience</h2>
+      <article class="item">
+        <div class="item__head">
+          <h3>Cyber Security Intern</h3>
+          <span class="mono">15 Jun – 29 Jul 2026</span>
+        </div>
+        <p class="item__sub">CyberYoddha LLP · 45-day programme</p>
+        <p>
+          Assessed through assignments, practical evaluations and a final examination.
+          Awarded an A+ grade on the overall assessment.
+        </p>
+      </article>
+    </section>
+
+    <section class="resume__section" data-reveal>
+      <h2>Projects</h2>
+      <article class="item">
+        <div class="item__head">
+          <h3>NETRA — passive network threat analytics platform</h3>
+          <span class="mono">2026</span>
+        </div>
+        <p class="item__sub">Python · FastAPI · React · scikit-learn · Sole author</p>
+        <ul>
+          <li>
+            Designed a passive analysis system that works only from a one-way copy of network
+            traffic, so the monitoring side never has a route back onto the link it watches.
+          </li>
+          <li>
+            Built reporting across eight categories of network behaviour, where every alert
+            carries the observations that produced it and an explicit statement of what it
+            does not prove.
+          </li>
+          <li>
+            Grouped machine-level findings into incidents an analyst can work, keeping the
+            policy that governs grouping separate from the policy that governs detection.
+          </li>
+          <li>
+            Fit and froze an anomaly-detection research baseline, defined its evaluation
+            protocol before scoring anything, and kept it out of the alert path after it
+            showed no measured benefit — rather than describing the project as AI-powered.
+          </li>
+          <li>
+            Wrote 48 test modules, including tests that assert a detector refuses to emit a
+            claim it cannot support, and recorded a reproducible throughput benchmark.
+          </li>
+        </ul>
+        <p class="item__link no-print">
+          <a href={href('/netra/')}>Full case study with screenshots →</a>
+        </p>
+      </article>
+    </section>
+
+    <section class="resume__section" data-reveal>
+      <h2>Certificates</h2>
+      <ul class="plain">
+        {
+          certificates.map((certificate) => (
+            <li>
+              <span>
+                {certificate.title} — {certificate.issuer}
+              </span>
+              <span class="mono">{certificate.date}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="resume__section" data-reveal>
+      <h2>Skills</h2>
+      <dl class="resume__skills">
+        {
+          skills.map((group) => (
+            <div>
+              <dt>{group.group}</dt>
+              <dd>{group.items.join(', ')}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="resume__section" data-reveal>
+      <h2>Lab practice</h2>
+      <ul class="plain plain--stacked">
+        {
+          practice.map((item) => (
+            <li>
+              <strong>{item.title}.</strong> {item.detail}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="resume__section" data-reveal>
+      <h2>Competitions</h2>
+      <ul class="plain">
+        {
+          ctfs.map((ctf) => (
+            <li>
+              <span>
+                {ctf.event} — {ctf.organiser} · {ctf.result}
+              </span>
+              <span class="mono">{ctf.date}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="resume__section" data-reveal>
+      <h2>Education</h2>
+      <ul class="plain">
+        {
+          education.map((entry) => (
+            <li>
+              <span>
+                {entry.qualification}
+                {entry.institution ? ` — ${entry.institution}` : ''}
+              </span>
+              <span class="mono">{entry.detail}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .resume {
+    padding-block: var(--space-7) var(--space-8);
+  }
+
+  .resume__sheet {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 4vw, 3rem);
+    box-shadow: var(--shadow-figure);
+  }
+
+  .resume__header {
+    display: grid;
+    gap: var(--space-4);
+    padding-bottom: var(--space-5);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .resume__role {
+    margin-top: var(--space-2);
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .resume__contact {
+    display: grid;
+    gap: var(--space-1);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    color: var(--text-faint);
+  }
+
+  .resume__note {
+    max-width: 68ch;
+    margin-top: var(--space-5);
+    padding: var(--space-4);
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius);
+    font-size: 0.84rem;
+    line-height: 1.6;
+    color: var(--text-faint);
+  }
+
+  .resume__section {
+    margin-top: var(--space-7);
+  }
+
+  .resume__section h2 {
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--line);
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    font-weight: 400;
+  }
+
+  .resume__section p {
+    max-width: 72ch;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+
+  .item {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .item__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+  }
+
+  .item__head h3 {
+    font-size: 1rem;
+  }
+
+  .item__head span {
+    font-size: 0.76rem;
+    color: var(--text-faint);
+  }
+
+  .item__sub {
+    font-size: 0.85rem !important;
+    color: var(--text-faint) !important;
+  }
+
+  .item ul {
+    display: grid;
+    gap: var(--space-2);
+    margin: var(--space-2) 0 0;
+    padding-left: 1.1rem;
+    max-width: 74ch;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .item li::marker {
+    color: var(--text-faint);
+  }
+
+  .item__link {
+    margin-top: var(--space-2);
+    font-size: 0.86rem !important;
+  }
+
+  .plain {
+    display: grid;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .plain li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--line);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .plain li .mono {
+    font-size: 0.74rem;
+    color: var(--text-faint);
+    white-space: nowrap;
+  }
+
+  .plain--stacked li {
+    display: block;
+    max-width: 74ch;
+    line-height: 1.6;
+  }
+
+  .plain--stacked strong {
+    color: var(--text);
+    font-weight: 560;
+  }
+
+  .resume__skills {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+  }
+
+  .resume__skills dt {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .resume__skills dd {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  @media (min-width: 46rem) {
+    .resume__header {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+    }
+
+    .resume__contact {
+      text-align: right;
+    }
+
+    .resume__skills div {
+      display: grid;
+      grid-template-columns: 11rem minmax(0, 1fr);
+      gap: var(--space-5);
+      align-items: baseline;
+    }
+  }
+
+  @media print {
+    .resume {
+      padding-block: 0;
+    }
+
+    .resume__sheet {
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+      background: #fff;
+    }
+
+    .resume__section {
+      margin-top: 1.1rem;
+      break-inside: avoid;
+    }
+  }
+</style>

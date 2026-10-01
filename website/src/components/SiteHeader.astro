@@ -1,0 +1,279 @@
+---
+import { nav, site } from '../site.config';
+import { href, isCurrent } from '../lib/url';
+import ThemeToggle from './ThemeToggle.astro';
+
+const current = Astro.url.pathname;
+const home = href('/');
+---
+
+<header class="site-header">
+  <div class="site-header__inner page">
+    <a class="brand" href={home} aria-current={current === home ? 'page' : undefined}>
+      <span class="brand__name">{site.name}</span>
+      <span class="brand__role">{site.role}</span>
+    </a>
+
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      data-nav-toggle
+    >
+      <span class="nav-toggle__bars" aria-hidden="true"></span>
+      <span class="visually-hidden">Menu</span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Primary">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={href(item.path)}
+                aria-current={isCurrent(current, item.path) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <ThemeToggle />
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const header = document.querySelector<HTMLElement>('.site-header');
+
+  const setOpen = (open: boolean) => {
+    toggle?.setAttribute('aria-expanded', String(open));
+    header?.classList.toggle('site-header--open', open);
+  };
+
+  toggle?.addEventListener('click', () => {
+    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setOpen(false);
+  });
+
+  matchMedia('(min-width: 70rem)').addEventListener('change', () => setOpen(false));
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    min-height: 4.25rem;
+  }
+
+  .brand {
+    display: grid;
+    align-content: center;
+    margin-right: auto;
+    padding-block: 0.15rem;
+    line-height: 1.2;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .brand__name {
+    font-size: 1.08rem;
+    font-weight: 640;
+    letter-spacing: -0.022em;
+  }
+
+  .brand__role {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.085em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .site-nav ul {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1) var(--space-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .site-nav a {
+    display: block;
+    position: relative;
+    padding-block: 0.4rem;
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .site-nav a:hover {
+    color: var(--text);
+  }
+
+  .site-nav a[aria-current='page'] {
+    color: var(--text);
+  }
+
+  .site-nav a[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: -0.2rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  @media (hover: hover) and (min-width: 70rem) {
+    .site-nav a::after {
+      content: '';
+      position: absolute;
+      inset-inline: 0;
+      bottom: -0.2rem;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--duration-fast) var(--ease);
+      opacity: 0.45;
+    }
+
+    .site-nav a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .site-nav a[aria-current='page']::after {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+  }
+
+  .nav-toggle {
+    display: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+
+  .nav-toggle__bars,
+  .nav-toggle__bars::before,
+  .nav-toggle__bars::after {
+    display: block;
+    width: 16px;
+    height: 1.5px;
+    background: var(--text);
+    transition: transform 180ms var(--ease), opacity 120ms var(--ease);
+  }
+
+  .nav-toggle__bars {
+    position: relative;
+  }
+
+  .nav-toggle__bars::before,
+  .nav-toggle__bars::after {
+    content: '';
+    position: absolute;
+    left: 0;
+  }
+
+  .nav-toggle__bars::before {
+    transform: translateY(-5px);
+  }
+
+  .nav-toggle__bars::after {
+    transform: translateY(5px);
+  }
+
+  @media (max-width: 69.99rem) {
+    .nav-toggle {
+      display: flex;
+    }
+
+    .site-nav {
+      position: absolute;
+      inset-inline: 0;
+      top: 100%;
+      display: grid;
+      gap: var(--space-2);
+      padding: var(--space-4) var(--page-pad) var(--space-5);
+      background: var(--bg-raised);
+      border-bottom: 1px solid var(--line);
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-0.4rem);
+      transition: opacity 160ms var(--ease), transform 160ms var(--ease),
+        visibility 160ms;
+    }
+
+    .site-header--open .site-nav {
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+    }
+
+    .site-nav ul {
+      display: grid;
+      gap: 0;
+    }
+
+    .site-nav li + li {
+      border-top: 1px solid var(--line);
+    }
+
+    .site-nav a {
+      padding-block: var(--space-3);
+      font-size: 1rem;
+    }
+
+    .site-nav a[aria-current='page']::after {
+      inset-inline: auto;
+      left: -0.75rem;
+      top: 50%;
+      bottom: auto;
+      width: 2px;
+      height: 1.1rem;
+      transform: translateY(-50%);
+    }
+
+    .site-header--open .nav-toggle__bars {
+      background: transparent;
+    }
+
+    .site-header--open .nav-toggle__bars::before {
+      transform: rotate(45deg);
+    }
+
+    .site-header--open .nav-toggle__bars::after {
+      transform: rotate(-45deg);
+    }
+  }
+</style>

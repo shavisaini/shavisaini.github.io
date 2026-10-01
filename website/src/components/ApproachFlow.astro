@@ -1,0 +1,124 @@
+---
+import type { Stage } from '../data/netra';
+
+interface Props {
+  stages: readonly Stage[];
+}
+
+const { stages } = Astro.props;
+---
+
+<ol class="flow">
+  {
+    stages.map((stage, index) => (
+      <li class="flow__stage">
+        <div class="flow__node" aria-hidden="true">
+          <span class="flow__step mono">{stage.step}</span>
+          {index < stages.length - 1 && <span class="flow__beam"></span>}
+        </div>
+        <h3 class="flow__title">{stage.title}</h3>
+        <p class="flow__detail">{stage.detail}</p>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .flow {
+    display: grid;
+    gap: var(--space-5);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .flow__stage {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--bg-raised) 78%, transparent);
+  }
+
+  .flow__node {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .flow__step {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--accent-line);
+    border-radius: 50%;
+    background: var(--accent-wash);
+    color: var(--accent);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+
+  .flow__beam {
+    display: none;
+  }
+
+  .flow__title {
+    font-size: 1.05rem;
+  }
+
+  .flow__detail {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  @media (min-width: 60rem) {
+    .flow {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0;
+    }
+
+    .flow__stage {
+      padding: var(--space-5) var(--space-4) var(--space-5);
+      border-radius: 0;
+      border-left-width: 0;
+    }
+
+    .flow__stage:first-child {
+      border-left-width: 1px;
+      border-radius: var(--radius) 0 0 var(--radius);
+    }
+
+    .flow__stage:last-child {
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .flow__beam {
+      display: block;
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        var(--accent),
+        var(--accent-alt, var(--accent))
+      );
+      opacity: 0.7;
+      position: relative;
+    }
+
+    .flow__beam::after {
+      content: '';
+      position: absolute;
+      right: -2px;
+      top: -3px;
+      width: 7px;
+      height: 7px;
+      border-top: 1px solid var(--accent-alt, var(--accent));
+      border-right: 1px solid var(--accent-alt, var(--accent));
+      transform: rotate(45deg);
+    }
+  }
+</style>

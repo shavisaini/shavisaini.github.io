@@ -1,0 +1,299 @@
+---
+/**
+ * Decorative identity for the Home hero. Not a live console and not a claim
+ * of professional title — a lab protocol that matches the work on the site.
+ */
+const steps = [
+  { n: '01', label: 'Recon' },
+  { n: '02', label: 'Analyze' },
+  { n: '03', label: 'Test' },
+  { n: '04', label: 'Secure' },
+] as const;
+---
+
+<aside class="lab" aria-hidden="true">
+  <div class="lab__scan"></div>
+  <p class="lab__kicker">Security lab</p>
+  <p class="lab__title">Ethical hacking</p>
+  <p class="lab__phrase">Observe. Analyze. Secure.</p>
+  <ol class="lab__steps">
+    {
+      steps.map((step) => (
+        <li>
+          <span class="lab__n">{step.n}</span>
+          <span class="lab__label">{step.label}</span>
+        </li>
+      ))
+    }
+  </ol>
+  <dl class="lab__meta">
+    <div>
+      <dt>Scope</dt>
+      <dd>authorized lab</dd>
+    </div>
+    <div>
+      <dt>Mode</dt>
+      <dd>research</dd>
+    </div>
+  </dl>
+  <p class="lab__prompt">
+    ready<span class="lab__cursor"></span>
+  </p>
+</aside>
+
+<style>
+  .lab {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+    min-width: 0;
+    padding: var(--space-4);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--bg-raised) 78%, transparent);
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .lab__scan {
+    position: absolute;
+    inset-inline: 0;
+    height: 28%;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      color-mix(in srgb, var(--accent) 12%, transparent),
+      transparent
+    );
+    animation: lab-scan 7.5s var(--ease) infinite;
+    pointer-events: none;
+  }
+
+  @keyframes lab-scan {
+    from {
+      transform: translateY(-120%);
+    }
+    to {
+      transform: translateY(420%);
+    }
+  }
+
+  .lab__kicker,
+  .lab__n,
+  .lab__meta dt,
+  .lab__prompt {
+    font-family: var(--font-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .lab__kicker {
+    margin: 0;
+    font-size: 0.62rem;
+  }
+
+  .lab__title {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .lab__phrase {
+    margin: 0;
+    max-width: 18ch;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--text-muted);
+  }
+
+  .lab__steps {
+    display: grid;
+    gap: 0.35rem;
+    margin: var(--space-1) 0 0;
+    padding: var(--space-3) 0 0;
+    border-top: 1px solid var(--line);
+    list-style: none;
+  }
+
+  .lab__steps li {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .lab__steps li::after {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--line-strong);
+    animation: lab-live 8s var(--ease) infinite;
+  }
+
+  .lab__steps li:nth-child(2)::after {
+    animation-delay: 2s;
+  }
+
+  .lab__steps li:nth-child(3)::after {
+    animation-delay: 4s;
+  }
+
+  .lab__steps li:nth-child(4)::after {
+    animation-delay: 6s;
+  }
+
+  @keyframes lab-live {
+    0%,
+    18% {
+      background: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-wash);
+    }
+    28%,
+    100% {
+      background: var(--line-strong);
+      box-shadow: none;
+    }
+  }
+
+  .lab__n {
+    font-size: 0.62rem;
+  }
+
+  .lab__meta {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0;
+    padding-top: var(--space-2);
+  }
+
+  .lab__meta div {
+    display: grid;
+    grid-template-columns: 3.6rem minmax(0, 1fr);
+    gap: 0.4rem;
+    align-items: baseline;
+  }
+
+  .lab__meta dt {
+    font-size: 0.58rem;
+  }
+
+  .lab__meta dd {
+    margin: 0;
+    font-size: 0.74rem;
+    color: var(--text-muted);
+  }
+
+  .lab__prompt {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    margin: 0;
+    padding-top: var(--space-2);
+    font-size: 0.62rem;
+    color: var(--accent);
+  }
+
+  .lab__cursor {
+    display: inline-block;
+    width: 0.45em;
+    height: 0.95em;
+    background: var(--accent);
+    animation: lab-cursor 1.05s steps(1) infinite;
+  }
+
+  @keyframes lab-cursor {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 69.99rem) {
+    .lab {
+      grid-template-columns: auto 1fr;
+      grid-template-areas:
+        'kicker phrase'
+        'title  phrase'
+        'steps  steps';
+      column-gap: var(--space-5);
+      row-gap: var(--space-2);
+      padding: var(--space-3) var(--space-4);
+    }
+
+    .lab__scan,
+    .lab__meta,
+    .lab__prompt {
+      display: none;
+    }
+
+    .lab__kicker {
+      grid-area: kicker;
+    }
+
+    .lab__title {
+      grid-area: title;
+    }
+
+    .lab__phrase {
+      grid-area: phrase;
+      align-self: center;
+      justify-self: end;
+      text-align: right;
+      max-width: none;
+    }
+
+    .lab__steps {
+      grid-area: steps;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-2);
+      border-top: 1px solid var(--line);
+    }
+
+    .lab__steps li {
+      grid-template-columns: auto 1fr;
+    }
+
+    .lab__steps li::after {
+      display: none;
+    }
+  }
+
+  @media (max-width: 29.99rem) {
+    .lab {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'kicker'
+        'title'
+        'phrase'
+        'steps';
+    }
+
+    .lab__phrase {
+      justify-self: start;
+      text-align: left;
+    }
+
+    .lab__steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lab__scan,
+    .lab__cursor,
+    .lab__steps li::after {
+      animation: none;
+    }
+
+    .lab__steps li:first-child::after {
+      background: var(--accent);
+    }
+  }
+</style>

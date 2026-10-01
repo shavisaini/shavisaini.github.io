@@ -1,0 +1,641 @@
+---
+import { Image } from 'astro:assets';
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ButtonLink from '../components/ButtonLink.astro';
+import { site } from '../site.config';
+import { href } from '../lib/url';
+import { certificates } from '../data/certificates';
+import { ctfs } from '../data/ctf';
+import { practice } from '../data/about';
+import { capabilities } from '../data/netra';
+
+import LabRail from '../components/LabRail.astro';
+
+import overview from '../assets/netra/netra-overview.png';
+import portrait from '../assets/portrait/shavi-hills.jpg';
+
+const reportsOn = capabilities.map((capability) => capability.name);
+---
+
+<BaseLayout
+  title="Shavi Saini — cybersecurity and ethical hacking"
+  description={site.description}
+  bare
+  page="home"
+>
+  <section class="hero page" data-reveal>
+    <div class="hero__field" aria-hidden="true"></div>
+    <LabRail />
+    <div class="hero__copy">
+      <p class="eyebrow">{site.location}</p>
+      <h1>Shavi Saini</h1>
+      <p class="hero__lede">
+        Cybersecurity and ethical hacking. I build and break network and web systems to
+        understand how they fail — and I try to be precise about what the evidence does and
+        does not support.
+      </p>
+      <div class="hero__actions">
+        <ButtonLink href={href('/netra/')} variant="solid">Read the NETRA case study</ButtonLink>
+        <ButtonLink href={href('/contact/')}>Get in touch</ButtonLink>
+      </div>
+      <p class="hero__connect">
+        The
+        <a href={href('/resume/')}>resume</a>
+        is the short version.
+        Recruiters, students and anyone working in the same space can also
+        <a href={site.links.linkedin} rel="me noopener noreferrer" target="_blank">
+          find me on LinkedIn
+        </a>.
+      </p>
+      <ul class="hero__proof">
+        <li>Google Cybersecurity Professional Certificate</li>
+        <li>OWASP API Security Top 10</li>
+        <li>TryHackMe Cyber Security 101</li>
+        <li>45-day security internship, A+</li>
+        <li>four CTFs</li>
+      </ul>
+    </div>
+    <figure class="hero__portrait">
+      <Image
+        src={portrait}
+        alt="Shavi Saini standing outdoors in the hills at dusk, wearing a plaid shirt"
+        widths={[360, 480, 720, 960]}
+        sizes="(min-width: 56rem) 22rem, 70vw"
+        quality={78}
+        loading="eager"
+        fetchpriority="high"
+      />
+    </figure>
+  </section>
+
+  <section class="feature page" aria-labelledby="feature-title" data-reveal>
+    <article class="feature__card">
+      <div class="feature__head">
+        <div class="feature__intro">
+          <p class="eyebrow">Selected work</p>
+          <h2 id="feature-title" class="feature__title">NETRA</h2>
+          <p class="feature__summary">
+            A passive network threat analytics prototype, built for Smart India Hackathon
+            2026. It reads a one-way copy of network traffic and raises alerts that carry the
+            evidence behind them — and that state plainly what they do not prove. No probing,
+            no response, no decryption.
+          </p>
+        </div>
+        <dl class="feature__meta">
+          <div>
+            <dt>Status</dt>
+            <dd>SIH 2026 prototype</dd>
+          </div>
+          <div>
+            <dt>Role</dt>
+            <dd>Sole author</dd>
+          </div>
+          <div>
+            <dt>Built with</dt>
+            <dd>Python · FastAPI · React · scikit-learn</dd>
+          </div>
+        </dl>
+      </div>
+
+      <a class="feature__shot" href={href('/netra/')} tabindex="-1" aria-hidden="true">
+        <Image
+          src={overview}
+          alt=""
+          widths={[640, 960, 1280, 1600]}
+          sizes="(min-width: 74rem) 1100px, 94vw"
+          quality={80}
+          loading="eager"
+          fetchpriority="high"
+        />
+      </a>
+
+      <div class="feature__foot">
+        <ul class="feature__classes">
+          {reportsOn.map((name) => <li>{name}</li>)}
+        </ul>
+        <a class="feature__link" href={href('/netra/')}>
+          Read the case study
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </article>
+  </section>
+
+  <section class="columns page" aria-labelledby="hands-on-title" data-reveal>
+    <h2 id="hands-on-title" class="visually-hidden">Hands-on work</h2>
+
+    <div class="column">
+      <div class="column__head">
+        <h3>Capture the flag</h3>
+        <a href={href('/ctf/')}>All CTFs &amp; events</a>
+      </div>
+      <ul class="rows">
+        {
+          ctfs.map((ctf) => (
+            <li class="row">
+              <span class="row__name">{ctf.event}</span>
+              <span class="row__meta mono">{ctf.result}</span>
+              <span class="row__sub">
+                {ctf.organiser} · {ctf.date}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="column">
+      <div class="column__head">
+        <h3>Lab practice</h3>
+        <a href={href('/about/#practice')}>More about me</a>
+      </div>
+      <ul class="rows">
+        {
+          practice.map((item) => (
+            <li class="row row--stacked">
+              <span class="row__name">{item.title}</span>
+              <span class="row__sub">{item.detail}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="certificates-strip page" aria-labelledby="certificates-title" data-reveal>
+    <div class="column__head">
+      <h2 id="certificates-title">Certificates</h2>
+      <a href={href('/certificates/')}>All certificates</a>
+    </div>
+    <ul class="rows rows--grid">
+      {
+        certificates.map((certificate) => (
+          <li class="row">
+            <span class="row__name">{certificate.title}</span>
+            <span class="row__meta mono">{certificate.date}</span>
+            <span class="row__sub">{certificate.issuer}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ----------------------------------------------------------------- hero */
+
+  .hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'portrait'
+      'copy'
+      'lab';
+    gap: var(--space-6);
+    overflow-x: clip;
+    padding-block: clamp(3rem, 1.6rem + 6vw, 6.5rem) var(--space-7);
+  }
+
+  .hero__field {
+    position: absolute;
+    inset: -18% -18% auto;
+    height: 26rem;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(
+      ellipse 70% 55% at 22% 40%,
+      color-mix(in srgb, var(--accent) 14%, transparent),
+      transparent 70%
+    );
+    animation: field-drift 32s var(--ease) infinite alternate;
+  }
+
+  .hero > :not(.hero__field) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero :global(.lab) {
+    grid-area: lab;
+  }
+
+  .hero__copy {
+    display: grid;
+    grid-area: copy;
+    gap: var(--space-4);
+    align-content: center;
+    min-width: 0;
+  }
+
+  .hero .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .hero .eyebrow::before {
+    content: '';
+    width: 1.4rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-size: clamp(2.6rem, 1.5rem + 4.2vw, 4.15rem);
+    letter-spacing: -0.04em;
+  }
+
+  .hero__lede {
+    max-width: 48ch;
+    font-size: clamp(1.1rem, 1rem + 0.6vw, 1.35rem);
+    line-height: 1.55;
+    color: var(--text-muted);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+
+  .hero__connect {
+    max-width: 52ch;
+    font-size: 0.9rem;
+    color: var(--text-faint);
+  }
+
+  .hero__connect a {
+    text-decoration: none;
+  }
+
+  .hero__connect a:hover {
+    text-decoration: underline;
+  }
+
+  .hero__proof {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    max-width: 62ch;
+    margin: var(--space-3) 0 0;
+    padding: var(--space-4) 0 0;
+    border-top: 1px solid var(--line);
+    list-style: none;
+  }
+
+  .hero__proof li {
+    padding: 0.18rem 0.55rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.02em;
+    color: var(--text-faint);
+    background: color-mix(in srgb, var(--bg-raised) 70%, transparent);
+  }
+
+  .hero__portrait {
+    grid-area: portrait;
+    margin: 0;
+    justify-self: start;
+    width: min(18rem, 70vw);
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-figure);
+    background: var(--bg-sunken);
+  }
+
+  .hero__portrait :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 12%;
+  }
+
+  @keyframes field-drift {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(3%, 2%, 0);
+    }
+  }
+
+  @media (min-width: 56rem) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr) minmax(17rem, 22rem);
+      grid-template-areas:
+        'copy portrait'
+        'lab  portrait';
+      align-items: center;
+      column-gap: var(--space-8);
+      row-gap: var(--space-5);
+    }
+
+    .hero__portrait {
+      justify-self: end;
+      align-self: center;
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 70rem) {
+    .hero {
+      grid-template-columns: 13.75rem minmax(0, 1fr) minmax(17rem, 22rem);
+      grid-template-areas: 'lab copy portrait';
+      column-gap: var(--space-7);
+      align-items: stretch;
+    }
+
+    .hero :global(.lab) {
+      align-self: center;
+    }
+
+    .hero__copy {
+      padding-block: var(--space-2);
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .hero__field {
+      animation: none;
+      height: 16rem;
+      opacity: 0.7;
+    }
+
+    .hero__portrait {
+      width: min(11.5rem, 46vw);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__field {
+      animation: none;
+    }
+  }
+
+  /* -------------------------------------------------------------- feature */
+
+  .feature {
+    padding-bottom: var(--space-8);
+  }
+
+  .feature__card {
+    display: grid;
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--bg-raised);
+    overflow: hidden;
+    transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+  }
+
+  .feature__card::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--accent) 70%, transparent),
+      transparent 72%
+    );
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .feature__head {
+    display: grid;
+    gap: var(--space-5);
+    padding: var(--space-6);
+  }
+
+  .feature__intro {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .feature__title {
+    font-size: clamp(1.8rem, 1.4rem + 1.6vw, 2.4rem);
+    letter-spacing: -0.028em;
+  }
+
+  .feature__summary {
+    max-width: 56ch;
+    color: var(--text-muted);
+  }
+
+  .feature__meta {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    align-content: start;
+  }
+
+  .feature__meta dt {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .feature__meta dd {
+    margin: 0;
+    font-size: 0.87rem;
+    color: var(--text-muted);
+  }
+
+  .feature__shot {
+    display: block;
+    line-height: 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-sunken);
+    overflow: hidden;
+  }
+
+  .feature__shot :global(img) {
+    width: 100%;
+    height: auto;
+    transition: transform 700ms var(--ease-out);
+  }
+
+  @media (hover: hover) and (min-width: 48rem) {
+    .feature__card:hover {
+      border-color: var(--line-strong);
+      box-shadow: var(--shadow-lift);
+    }
+
+    .feature__card:hover .feature__shot :global(img) {
+      transform: scale(1.012);
+    }
+  }
+
+  .feature__foot {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .feature__classes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .feature__classes li {
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-faint);
+  }
+
+  .feature__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    text-decoration: none;
+    justify-self: start;
+  }
+
+  .feature__link span {
+    transition: transform 200ms var(--ease);
+  }
+
+  .feature__link:hover span {
+    transform: translateX(3px);
+  }
+
+  @media (min-width: 56rem) {
+    .feature__head {
+      grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+      gap: var(--space-8);
+      padding: var(--space-7);
+    }
+
+    .feature__foot {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      padding-inline: var(--space-7);
+    }
+  }
+
+  /* -------------------------------------------------------------- columns */
+
+  .columns {
+    display: grid;
+    gap: var(--space-7);
+    padding-bottom: var(--space-8);
+  }
+
+  .column {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+
+  .column__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .column__head h2,
+  .column__head h3 {
+    font-size: 1rem;
+  }
+
+  .column__head a {
+    font-size: 0.82rem;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .column__head a:hover {
+    text-decoration: underline;
+  }
+
+  .rows {
+    display: grid;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.1rem var(--space-4);
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--line);
+    transition: background-color var(--duration-fast) var(--ease);
+  }
+
+  @media (hover: hover) {
+    .row:hover {
+      background: color-mix(in srgb, var(--accent-wash) 55%, transparent);
+    }
+  }
+
+  .row--stacked {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .row__name {
+    font-size: 0.93rem;
+    color: var(--text);
+  }
+
+  .row__meta {
+    font-size: 0.76rem;
+    color: var(--text-faint);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .row__sub {
+    grid-column: 1 / -1;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--text-faint);
+  }
+
+  @media (min-width: 52rem) {
+    .columns {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-8);
+    }
+  }
+
+  /* --------------------------------------------------- certificates strip */
+
+  .certificates-strip {
+    display: grid;
+    gap: var(--space-4);
+    padding-bottom: var(--space-7);
+  }
+
+  @media (min-width: 52rem) {
+    .rows--grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-8);
+    }
+  }
+</style>

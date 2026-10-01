@@ -1,0 +1,120 @@
+---
+import { site } from '../site.config';
+import { href } from '../lib/url';
+
+interface Props {
+  contact?: boolean;
+}
+
+const { contact = true } = Astro.props;
+
+const updated = new Date().toLocaleDateString('en-GB', {
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<footer class:list={['site-footer', !contact && 'site-footer--slim']}>
+  <div class="site-footer__inner page">
+    {
+      contact && (
+        <div class="site-footer__contact">
+          <h2 class="eyebrow">Contact</h2>
+          <p class="site-footer__email">
+            <a href={`mailto:${site.email}`}>{site.email}</a>
+          </p>
+          <p class="site-footer__note">
+            Open to security engineering and security analyst internships. Email reaches me
+            directly; LinkedIn is the easiest place to start a conversation.
+          </p>
+        </div>
+      )
+    }
+
+    <nav class="site-footer__links" aria-label="Elsewhere">
+      <ul>
+        <li>
+          <a href={site.links.linkedin} rel="me noopener noreferrer" target="_blank">LinkedIn</a>
+        </li>
+        <li><a href={href('/resume/')}>Resume</a></li>
+        <li><a href={href('/contact/')}>Contact</a></li>
+      </ul>
+    </nav>
+
+    <p class="site-footer__meta">
+      <span>{site.location}</span>
+      <span aria-hidden="true">·</span>
+      <span>Last updated {updated}</span>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-9);
+    border-top: 1px solid var(--line);
+    background: var(--bg-sunken);
+  }
+
+  .site-footer__inner {
+    display: grid;
+    gap: var(--space-6);
+    padding-block: var(--space-7);
+    grid-template-columns: 1fr;
+  }
+
+  .site-footer__contact {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .site-footer__email {
+    font-size: 1.05rem;
+  }
+
+  .site-footer__note {
+    color: var(--text-faint);
+    font-size: 0.9rem;
+  }
+
+  .site-footer__links ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.9rem;
+  }
+
+  .site-footer__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+  }
+
+  @media (min-width: 52rem) {
+    .site-footer__inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      column-gap: var(--space-8);
+    }
+
+    .site-footer__links {
+      justify-self: end;
+    }
+
+    .site-footer__meta {
+      grid-column: 1 / -1;
+      padding-top: var(--space-5);
+      border-top: 1px solid var(--line);
+    }
+
+    .site-footer--slim .site-footer__links {
+      justify-self: start;
+    }
+  }
+</style>

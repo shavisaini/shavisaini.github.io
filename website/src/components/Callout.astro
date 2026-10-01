@@ -1,0 +1,59 @@
+---
+interface Props {
+  title: string;
+  /** `limit` marks a stated boundary of the work; `note` is neutral context. */
+  tone?: 'limit' | 'note';
+}
+
+const { title, tone = 'note' } = Astro.props;
+---
+
+<aside class:list={['callout', `callout--${tone}`]}>
+  <p class="callout__title">{title}</p>
+  <div class="callout__body">
+    <slot />
+  </div>
+</aside>
+
+<style>
+  .callout {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--line-strong);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background: var(--bg-raised);
+  }
+
+  .callout--limit {
+    border-left-color: var(--sev-medium);
+  }
+
+  .callout__title {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .callout__body {
+    display: grid;
+    gap: var(--space-3);
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    max-width: 72ch;
+  }
+
+  .callout__body :global(ul) {
+    margin: 0;
+    padding-left: 1.05rem;
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .callout__body :global(li::marker) {
+    color: var(--text-faint);
+  }
+</style>

@@ -1,0 +1,402 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Section from '../components/Section.astro';
+import { journey } from '../data/journey';
+import { skills, practice, education } from '../data/about';
+import { href } from '../lib/url';
+import { site } from '../site.config';
+import { Image } from 'astro:assets';
+import portrait from '../assets/portrait/shavi-formal.jpg';
+---
+
+<BaseLayout
+  title="About"
+  description="Shavi Saini is a Computer Science Engineering student working in cybersecurity: network threat analytics, web and API security testing, and hands-on lab practice."
+  page="about"
+>
+  <div class="page page--narrow">
+    <div class="about-lead">
+      <PageHeader
+        eyebrow="About"
+        title="Shavi Saini"
+        lede="A Computer Science Engineering student working in cybersecurity — network threat analytics, web and API security testing, and the lab practice behind both."
+      />
+      <figure class="about-lead__portrait">
+        <Image
+          src={portrait}
+          alt="Portrait of Shavi Saini in a white shirt and maroon tie"
+          widths={[240, 360, 480]}
+          sizes="(min-width: 46rem) 11rem, 38vw"
+          quality={78}
+        />
+      </figure>
+    </div>
+
+    <div class="intro prose" data-reveal>
+      <p>
+        Most of what I know I learned by building something and then finding out where it was
+        wrong. <a href={href('/netra/')}>NETRA</a> is the clearest example: a passive network
+        threat analytics prototype where the hardest problems were not detection at all, but
+        deciding what a detector is allowed to say, and making a missing measurement stay
+        missing instead of quietly becoming a zero.
+      </p>
+      <p>
+        Alongside that I work through web and API security the same way — intercepting and
+        modifying requests, exploiting the vulnerability classes in a lab I control, and
+        writing down what the finding actually proves. I finished the Google Cybersecurity
+        Professional Certificate in 2025, a 45-day security internship with an A+ grade in
+        2026, and I compete in CTFs when I can.
+      </p>
+      <p>
+        I am looking for security engineering and security analyst internships where the work
+        involves real telemetry and real evidence. If that is you — or if you are a student
+        working through the same problems —
+        <a href={site.links.linkedin} rel="me noopener noreferrer" target="_blank">
+          LinkedIn is the easiest place to start
+        </a>.
+        The <a href={href('/resume/')}>resume</a> is the compressed version of the same record.
+      </p>
+    </div>
+
+    <Section id="journey" index="01" title="Journey">
+      <ol class="timeline">
+        {
+          journey.map((milestone, index) => (
+            <li class="milestone" data-reveal style={`--reveal-delay: ${index * 60}ms`}>
+              <span class="milestone__date mono">{milestone.date}</span>
+              <span class="milestone__mark" aria-hidden="true"></span>
+              <div class="milestone__body">
+                <h3 class="milestone__title">{milestone.title}</h3>
+                <p class="milestone__detail">{milestone.detail}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </Section>
+
+    <Section id="skills" index="02" title="Skills">
+      <dl class="skills" data-reveal>
+        {
+          skills.map((group) => (
+            <div class="skills__group">
+              <dt>{group.group}</dt>
+              <dd>
+                <ul>
+                  {group.items.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+      <p class="note">
+        No percentage bars. A skill is either something I have used on a documented piece of
+        work or something I am still learning, and a number would not tell you which.
+      </p>
+    </Section>
+
+    <Section id="practice" index="03" title="Lab practice">
+      <p class="note note--lead">
+        These are structured exercises in a lab I built, not original projects. The
+        distinction matters: anyone who has run them will know the difference, and calling
+        them projects would cost more credibility than it buys.
+      </p>
+      <ul class="practice" data-reveal>
+        {
+          practice.map((item) => (
+            <li>
+              <h3>{item.title}</h3>
+              <p>{item.detail}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </Section>
+
+    <Section id="education" index="04" title="Education">
+      <dl class="education" data-reveal>
+        {
+          education.map((entry) => (
+            <div>
+              <dt>{entry.qualification}</dt>
+              <dd>
+                {entry.institution && <span>{entry.institution}</span>}
+                <span class="mono">{entry.detail}</span>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </Section>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .about-lead {
+    display: grid;
+    gap: var(--space-5);
+    align-items: end;
+    padding-bottom: var(--space-2);
+  }
+
+  .about-lead :global(.page-header) {
+    padding-bottom: var(--space-4);
+  }
+
+  .about-lead__portrait {
+    margin: 0;
+    width: min(10.5rem, 42vw);
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-figure);
+    background: var(--bg-sunken);
+  }
+
+  .about-lead__portrait :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 12%;
+  }
+
+  @media (min-width: 46rem) {
+    .about-lead {
+      grid-template-columns: minmax(0, 1fr) 11rem;
+      align-items: start;
+      gap: var(--space-6);
+    }
+
+    .about-lead__portrait {
+      width: 100%;
+      margin-top: var(--space-8);
+    }
+  }
+
+  .intro {
+    padding-bottom: var(--space-7);
+  }
+
+  /* ------------------------------------------------------------- timeline */
+
+  .timeline {
+    display: grid;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+
+  .milestone {
+    display: grid;
+    gap: var(--space-1);
+    padding-block: var(--space-4);
+    border-top: 1px solid var(--line);
+  }
+
+  .milestone:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .milestone__date {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding-top: 0.25rem;
+  }
+
+  .milestone__mark {
+    display: none;
+  }
+
+  .milestone__body {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .milestone__title {
+    font-size: 0.98rem;
+  }
+
+  .milestone__detail {
+    max-width: 66ch;
+    color: var(--text-muted);
+    font-size: 0.89rem;
+  }
+
+  @media (min-width: 46rem) {
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7.05rem;
+      top: 0.55rem;
+      bottom: 0.55rem;
+      width: 1px;
+      background: linear-gradient(
+        to bottom,
+        var(--accent-line),
+        var(--line) 18%,
+        var(--line) 82%,
+        transparent
+      );
+    }
+
+    .milestone {
+      grid-template-columns: 6.5rem 0.75rem minmax(0, 1fr);
+      gap: var(--space-4);
+      border-top: 0;
+      padding-block: var(--space-5);
+    }
+
+    .milestone:first-child {
+      padding-top: 0;
+    }
+
+    .milestone__mark {
+      display: block;
+      width: 9px;
+      height: 9px;
+      margin-top: 0.45rem;
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      background: var(--bg);
+      box-shadow: 0 0 0 3px var(--bg);
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  /* --------------------------------------------------------------- skills */
+
+  .skills {
+    display: grid;
+    gap: var(--space-5);
+    margin: 0;
+  }
+
+  .skills__group {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .skills dt {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .skills dd {
+    margin: 0;
+  }
+
+  .skills ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .skills li {
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--bg-raised);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    transition:
+      border-color var(--duration-fast) var(--ease),
+      color var(--duration-fast) var(--ease),
+      background-color var(--duration-fast) var(--ease);
+  }
+
+  @media (hover: hover) {
+    .skills li:hover {
+      border-color: var(--accent-line);
+      color: var(--text);
+      background: var(--accent-wash);
+    }
+  }
+
+  @media (min-width: 46rem) {
+    .skills__group {
+      grid-template-columns: 11rem minmax(0, 1fr);
+      gap: var(--space-5);
+      align-items: baseline;
+    }
+  }
+
+  /* ------------------------------------------------------------- practice */
+
+  .practice {
+    display: grid;
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .practice li {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    background: var(--bg-raised);
+  }
+
+  .practice h3 {
+    font-size: 0.97rem;
+  }
+
+  .practice p {
+    max-width: 68ch;
+    color: var(--text-muted);
+    font-size: 0.89rem;
+  }
+
+  /* ------------------------------------------------------------ education */
+
+  .education {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+  }
+
+  .education dt {
+    font-size: 0.95rem;
+  }
+
+  .education dd {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin: 0;
+    font-size: 0.86rem;
+    color: var(--text-faint);
+  }
+
+  .note {
+    max-width: 68ch;
+    font-size: 0.84rem;
+    line-height: 1.65;
+    color: var(--text-faint);
+  }
+
+  .note--lead {
+    margin-bottom: var(--space-2);
+  }
+</style>

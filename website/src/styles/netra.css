@@ -1,0 +1,164 @@
+/*
+  NETRA page identity.
+
+  The rest of the site is deliberately neutral — paper and ink. The case study
+  is the one place that earns a voice of its own, so it swaps the neutral base
+  for a deep navy with a cyan and violet accent pair, and adds an atmospheric
+  backdrop behind the content.
+
+  It is a palette swap, not a second design system: every rule below rebinds an
+  existing token, so headers, footers, figures and buttons restyle themselves
+  and nothing needs a NETRA-specific variant.
+*/
+
+:root[data-scope='netra'] {
+  --bg: #080b14;
+  --bg-raised: #0e1322;
+  --bg-sunken: #060910;
+  --surface: #121829;
+  --surface-hover: #19223a;
+
+  --line: #1e2742;
+  --line-strong: #303d64;
+
+  --text: #e9edf8;
+  --text-muted: #a9b4cd;
+  --text-faint: #8691ad;
+
+  --accent: #5fd2e6;
+  --accent-strong: #93e4f2;
+  --accent-line: #275f74;
+  --accent-wash: rgba(95, 210, 230, 0.12);
+
+  /* Second accent, used only for the backdrop and the flow connector. */
+  --accent-alt: #8b7ff0;
+
+  --grid-line: rgba(126, 160, 220, 0.06);
+  --shadow-figure: 0 1px 2px rgb(0 0 0 / 0.55), 0 26px 60px -28px rgb(2 6 18 / 0.95);
+}
+
+:root[data-scope='netra'][data-theme='light'] {
+  --bg: #f6f8fd;
+  --bg-raised: #ffffff;
+  --bg-sunken: #eceff8;
+  --surface: #ffffff;
+  --surface-hover: #f1f4fb;
+
+  --line: #dde2f0;
+  --line-strong: #bcc5dd;
+
+  --text: #0f1428;
+  --text-muted: #434d69;
+  --text-faint: #5b6480;
+
+  --accent: #0d6a88;
+  --accent-strong: #09516a;
+  --accent-line: #9cc5d6;
+  --accent-wash: rgba(13, 106, 136, 0.08);
+
+  --accent-alt: #5847c4;
+
+  --grid-line: rgba(40, 70, 120, 0.05);
+  --shadow-figure: 0 1px 2px rgb(16 20 40 / 0.07), 0 24px 54px -30px rgb(16 24 50 / 0.3);
+}
+
+/*
+  Atmosphere. Two wide colour fields and a faint measuring grid, fixed to the
+  viewport so the content reads as sitting on an instrument surface rather than
+  on a decorated page.
+*/
+:root[data-scope='netra'] body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(
+      55rem 38rem at 12% -8%,
+      color-mix(in srgb, var(--accent) 14%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      45rem 34rem at 96% 2%,
+      color-mix(in srgb, var(--accent-alt) 13%, transparent),
+      transparent 60%
+    ),
+    repeating-linear-gradient(
+      to right,
+      var(--grid-line) 0 1px,
+      transparent 1px 5.5rem
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--grid-line) 0 1px,
+      transparent 1px 5.5rem
+    );
+  background-attachment: fixed;
+}
+
+:root[data-scope='netra'] .site-header {
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--accent) 18%, var(--line));
+}
+
+:root[data-scope='netra'] .site-nav a[aria-current='page']::after {
+  background: var(--accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+/* Figures are the evidence here, so they get a little more presence. */
+:root[data-scope='netra'] .figure__frame {
+  position: relative;
+  transition: transform 400ms var(--ease), box-shadow 400ms var(--ease),
+    border-color 400ms var(--ease);
+  background-image:
+    linear-gradient(var(--accent), var(--accent)),
+    linear-gradient(var(--accent), var(--accent)),
+    linear-gradient(var(--accent), var(--accent)),
+    linear-gradient(var(--accent), var(--accent)),
+    linear-gradient(var(--accent), var(--accent)),
+    linear-gradient(var(--accent), var(--accent)),
+    linear-gradient(var(--accent), var(--accent)),
+    linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-size:
+    14px 1px, 1px 14px,
+    14px 1px, 1px 14px,
+    14px 1px, 1px 14px,
+    14px 1px, 1px 14px;
+  background-position:
+    top left, top left,
+    top right, top right,
+    bottom left, bottom left,
+    bottom right, bottom right;
+}
+
+@media (hover: hover) and (min-width: 48rem) {
+  :root[data-scope='netra'] .figure:hover .figure__frame {
+    transform: translateY(-3px);
+    border-color: var(--accent-line);
+    box-shadow: var(--shadow-figure),
+      0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+}
+
+/*
+  Reveal on scroll. The attribute is only honoured once the script has run, so
+  a reader without JavaScript — or one who scrolled before hydration — sees
+  everything immediately instead of a blank column.
+*/
+:root[data-reveal='on'][data-scope='netra'] [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 620ms var(--ease), transform 620ms var(--ease);
+}
+
+:root[data-reveal='on'][data-scope='netra'] [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-reveal='on'][data-scope='netra'] [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

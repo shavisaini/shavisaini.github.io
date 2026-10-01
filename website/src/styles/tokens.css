@@ -1,0 +1,106 @@
+/*
+  Design tokens.
+
+  One neutral base, one accent, and a four-step severity ramp used for
+  cautionary labels (a capability's "does not claim" line, a stated limit).
+  Colour that means something in a specific context is worth more than colour
+  everywhere. NETRA rebinds the same tokens rather than inventing a second system.
+*/
+
+:root {
+  color-scheme: dark;
+
+  --bg: #0d0f11;
+  --bg-raised: #131619;
+  --bg-sunken: #0a0c0e;
+  --surface: #15181c;
+  --surface-hover: #1a1e23;
+
+  --line: #22272c;
+  --line-strong: #30373e;
+
+  --text: #e7eaed;
+  --text-muted: #a3acb5;
+  /* Lightened to clear 4.5:1 against --surface, the lightest panel it sits on. */
+  --text-faint: #838c95;
+
+  --accent: #7fa9cf;
+  --accent-strong: #a0c4e4;
+  --accent-line: #335876;
+  --accent-wash: rgba(127, 169, 207, 0.1);
+  --accent-alt: #8b7ff0;
+
+  --sev-info: #7d8a96;
+  --sev-low: #6694b2;
+  --sev-medium: #c69350;
+  --sev-high: #cd6a5c;
+
+  --shadow-figure: 0 1px 2px rgb(0 0 0 / 0.5), 0 18px 48px -24px rgb(0 0 0 / 0.8);
+  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.4), 0 14px 36px -22px rgb(0 0 0 / 0.7);
+
+  --grid-line: rgba(140, 168, 196, 0.055);
+
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Mono',
+    'SF Mono', Consolas, 'Liberation Mono', monospace;
+
+  /* 4px rhythm. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  --radius-sm: 3px;
+  --radius: 6px;
+  --radius-lg: 10px;
+
+  --measure: 68ch;
+  --page-max: 1180px;
+  --page-pad: clamp(1.25rem, 5vw, 3rem);
+
+  --ease: cubic-bezier(0.2, 0, 0.1, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 160ms;
+  --duration: 280ms;
+  --duration-reveal: 560ms;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #fcfbf9;
+  --bg-raised: #ffffff;
+  --bg-sunken: #f3f1ed;
+  --surface: #ffffff;
+  --surface-hover: #f6f4f1;
+
+  --line: #e3e0da;
+  --line-strong: #cfcbc3;
+
+  --text: #16191c;
+  --text-muted: #4e565e;
+  /* Darkened to clear 4.5:1 against --bg-sunken, the darkest panel it sits on. */
+  --text-faint: #656c71;
+
+  --accent: #2c6490;
+  --accent-strong: #1f4e74;
+  --accent-line: #a9c6dd;
+  --accent-wash: rgba(44, 100, 144, 0.07);
+  --accent-alt: #5847c4;
+
+  --sev-info: #6b7580;
+  --sev-low: #37688a;
+  --sev-medium: #9a6a1d;
+  --sev-high: #a3402f;
+
+  --shadow-figure: 0 1px 2px rgb(16 20 24 / 0.08), 0 18px 44px -26px rgb(16 20 24 / 0.35);
+  --shadow-lift: 0 1px 2px rgb(16 20 24 / 0.06), 0 16px 40px -24px rgb(16 20 24 / 0.22);
+
+  --grid-line: rgba(40, 60, 80, 0.05);
+}

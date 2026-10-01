@@ -1,0 +1,696 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import Figure from '../components/Figure.astro';
+import Lightbox from '../components/Lightbox.astro';
+import Callout from '../components/Callout.astro';
+import MetaList from '../components/MetaList.astro';
+import ButtonLink from '../components/ButtonLink.astro';
+import ApproachFlow from '../components/ApproachFlow.astro';
+import CapabilityGrid from '../components/CapabilityGrid.astro';
+import TelemetryField from '../components/TelemetryField.astro';
+
+import { netra, approach, capabilities, principles, limitations, learnings } from '../data/netra';
+import { href } from '../lib/url';
+
+import '../styles/netra.css';
+
+import overview from '../assets/netra/netra-overview.png';
+import alerts from '../assets/netra/netra-alerts.png';
+import evidence from '../assets/netra/netra-evidence.png';
+import intel from '../assets/netra/netra-intel.png';
+
+const toc = [
+  { href: '#why', label: 'Why I built it' },
+  { href: '#approach', label: 'Approach' },
+  { href: '#what', label: 'What it reports' },
+  { href: '#work', label: 'The work' },
+  { href: '#security', label: 'Security position' },
+  { href: '#learned', label: 'What I learned' },
+  { href: '#status', label: 'Status' },
+] as const;
+---
+
+<BaseLayout
+  title="NETRA — passive network threat analytics"
+  description="NETRA is a passive network threat analytics prototype built for Smart India Hackathon 2026. It reads a one-way copy of network traffic and raises alerts that carry the evidence behind them, with the limits of every claim stated on the alert itself."
+  scope="netra"
+>
+  <div class="case">
+    <header class="hero">
+      <div class="hero__aurora" aria-hidden="true"></div>
+      <div class="hero__scan" aria-hidden="true"></div>
+
+      <div class="hero__body">
+        <div class="hero__copy">
+          <p class="eyebrow">Project</p>
+          <h1 class="hero__title">NETRA</h1>
+          <p class="hero__tagline mono">{netra.tagline}</p>
+          <ul class="hero__chips">
+            <li>Passive</li>
+            <li>Prototype</li>
+            <li>SIH 2026</li>
+          </ul>
+          <p class="lede hero__lede">
+            Networks that matter have to be watched without the watcher becoming a way in.
+            NETRA reads a one-way copy of traffic, reports the behaviour it can actually
+            evidence, and says plainly what each finding does not prove.
+          </p>
+
+          <MetaList
+            items={[
+              { term: 'Status', value: netra.status },
+              { term: 'Role', value: netra.role },
+              { term: 'Built with', value: netra.stack },
+            ]}
+          />
+
+          <div class="hero__actions">
+            <ButtonLink href="#work" variant="solid">See the evidence</ButtonLink>
+            <ButtonLink href={href('/contact/')}>Ask me about it</ButtonLink>
+          </div>
+        </div>
+
+        <div class="hero__field" aria-hidden="true">
+          <TelemetryField />
+        </div>
+      </div>
+    </header>
+
+    <div class="case__layout">
+    <div class="case__body">
+      <Section id="why" index="01" title="Why I built it" flush={false}>
+        <div class="prose" data-reveal>
+          <p>
+            Operators of critical networks need to watch a gateway or a peering link without
+            giving the monitoring system a route back onto it. The usual assumption is a
+            one-directional boundary — traffic is copied inward and nothing travels back out.
+            The monitoring side still has to say something useful about what went past:
+            floods, odd name resolution, machine-like repetition, scanning, unusual transfers.
+          </p>
+          <p>
+            The part I found genuinely hard was not spotting those patterns. It was deciding
+            what the system is allowed to say about them. A tool that announces
+            <em>command-and-control detected</em> and offers nothing behind it is a tool an
+            analyst learns to ignore. So the governing rule became: every statement travels
+            with the observation that produced it, and every statement carries the limit of
+            what it proves.
+          </p>
+        </div>
+      </Section>
+
+      <Section id="approach" index="02" title="How I approached the problem">
+        <div class="prose" data-reveal>
+          <p>
+            Four ideas, in the order a reader needs them rather than the order the code runs
+            in. The second one shaped the project more than anything else: a measurement that
+            could not be taken has to stay missing, because a zero standing in for an unknown
+            will quietly satisfy a comparison somewhere and manufacture a finding out of
+            nothing.
+          </p>
+        </div>
+
+        <div data-reveal>
+          <ApproachFlow stages={approach} />
+        </div>
+      </Section>
+
+      <Section id="what" index="03" title="What it reports on">
+        <div class="prose" data-reveal>
+          <p>
+            Eight categories of network behaviour. Each one is paired with the claim it is
+            specifically not permitted to make — those sentences are part of the design, not a
+            disclaimer bolted on afterwards, and writing them is what removed several
+            conclusions the data had never actually supported.
+          </p>
+        </div>
+
+        <div data-reveal>
+          <CapabilityGrid items={capabilities} />
+        </div>
+      </Section>
+
+      <Section id="work" index="04" title="The work">
+        <div class="prose" data-reveal>
+          <p>
+            Four views from the running prototype, replaying research packet captures. They
+            are here as evidence that the thing exists and behaves as described — not as a
+            tour of how it is put together.
+          </p>
+        </div>
+
+        <div data-reveal>
+          <Figure
+            src={overview}
+            label="NETRA · Overview"
+            tag="Fig. 1"
+            alt="The NETRA overview dashboard after replaying a packet capture. Tiles read 26,922 packets processed, 3 incident alerts, 2 critical or high alerts, 7 detector findings, 17 suppressed findings, 3 incidents, 24 threat-intelligence matches, 3.76 MB observed, 4,657 TCP and 85 UDP packets, 0 active flows and capture idle. A recent-incidents table lists two high-severity command-and-control incidents and one low-severity reconnaissance incident, all marked detected."
+            priority
+          >
+            <strong>Fig. 1 — one session, summarised.</strong> Roughly 27,000 packets of
+            replayed traffic produced seven machine-level findings, which the system gathered
+            into three incidents and three analyst alerts. The distance between those numbers
+            is the whole idea: an analyst should be handed episodes to work, not one row per
+            observation. A further seventeen matches were held back rather than silently
+            discarded, and the dashboard says so.
+          </Figure>
+        </div>
+
+        <div data-reveal>
+          <Figure
+            src={alerts}
+            label="NETRA · Alerts"
+            tag="Fig. 2"
+            alt="The NETRA alerts view. The left panel lists three incident alerts: two detected high-severity command-and-control entries for one internal host, with five and one findings respectively and high evidence strength, and one detected low-severity reconnaissance entry with moderate evidence strength. A note above the table reads: 3 incident alerts — not one row per detector finding. The right panel streams the observed packet table alongside it."
+          >
+            <strong>Fig. 2 — alerts are incidents, not observations.</strong> The product says
+            so in its own header: <em>3 incident alerts — not one row per detector finding</em>.
+            Each entry carries a severity, an evidence strength and the host it concerns, and
+            repeated activity from one host collapses into a single alert instead of filling
+            the queue. The raw traffic stays beside it so the two can be read against each
+            other.
+          </Figure>
+        </div>
+
+        <div data-reveal>
+          <Figure
+            src={evidence}
+            label="NETRA · Evidence"
+            tag="Fig. 3"
+            alt="The NETRA incident evidence page. A left column lists three correlated incidents, each marked detected with its finding count. The right column shows the selected incident with its threat class, host, severity, evidence strength, finding count, first and last seen times, attribution recorded as NOT_ESTABLISHED, and a heading reading Why this alert, under which a line states that the observed measurements are detector evidence and not an AI conclusion. A banner at the top reads: passive, read-only, assessment is downstream."
+          >
+            <strong>Fig. 3 — every alert arrives with its reasoning attached.</strong> The
+            banner across the top states the posture — <em>passive · read-only · assessment is
+            downstream</em> — and the record below refuses to overreach: attribution is written
+            as <code>NOT_ESTABLISHED</code> rather than guessed at, and the page announces that
+            what follows is detector evidence and not an AI conclusion. The grey line above it
+            is the prototype's own error state for a request that did not complete; it is still
+            here because re-shooting the screen would make the tool look steadier than it is.
+          </Figure>
+        </div>
+
+        <div data-reveal>
+          <Figure
+            src={intel}
+            label="NETRA · Threat Intelligence"
+            tag="Fig. 4"
+            alt="The NETRA threat intelligence view. A banner reads: passive IOC correlation — enrichment, not a verdict. Explanatory text states that threat intelligence is an evidence or enrichment source, does not independently prove malicious activity, that this prototype imports a local list, and that it does not query live reputation services or contact observed hosts. Tiles show 4 stored indicators, 4 active indicators, 0 expired or revoked, and 24 matches, against a lab demonstration intelligence source."
+          >
+            <strong>Fig. 4 — enrichment, not a verdict.</strong> That phrasing is the product's,
+            not mine. Indicator matching runs against a locally supplied list, and the page
+            states outright that it queries no live reputation service and contacts no observed
+            host. That is not a limitation I am apologising for — it is the point. A reputation
+            lookup would be an outbound connection from a network that is meant to be watched
+            and not touched.
+          </Figure>
+        </div>
+
+        <Callout title="About these captures">
+          <p>
+            Each image is an unmodified crop of the running prototype, taken between
+            {' '}{netra.captures.range}. The browser window and the desktop around it were
+            removed, and nothing inside the application was retouched, recoloured or redrawn.
+            Two are cropped more tightly than the others — one stops above a table of detection
+            thresholds, the other above a configuration panel — because those details belong to
+            the implementation rather than to the argument. The figures also come from more
+            than one analysis session, which is why the packet and finding counts differ
+            between them. The traffic itself is replayed from public research captures, never
+            from a live network.
+          </p>
+        </Callout>
+      </Section>
+
+      <Section id="security" index="05" title="The security position">
+        <div class="prose" data-reveal>
+          <p>
+            A monitoring system sitting on sensitive infrastructure is itself part of the
+            attack surface. Four positions follow from that, and each one cost something — the
+            fourth in particular gives up a convenient feature in exchange for a boundary that
+            holds.
+          </p>
+        </div>
+
+        <ul class="principles" data-reveal>
+          {
+            principles.map((item) => (
+              <li>
+                <h3>{item.title}</h3>
+                <p>{item.detail}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </Section>
+
+      <Section id="learned" index="06" title="What I learned">
+        <ol class="lessons" data-reveal>
+          {
+            learnings.map((item) => (
+              <li>
+                <h3>{item.title}</h3>
+                <p>{item.detail}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </Section>
+
+      <Section id="status" index="07" title="Status and limitations">
+        <div class="prose" data-reveal>
+          <p>
+            NETRA is a <strong>{netra.status}</strong> — built to a hackathon timeline and
+            never run anywhere but a lab. I wrote it alone. The list below is reproduced from
+            the project's own documentation rather than softened for a portfolio, because a
+            reviewer who finds the gap before I admit it has every reason to doubt everything
+            else on this page.
+          </p>
+        </div>
+
+        <ul class="limits" data-reveal>
+          {limitations.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <Callout title="On the source" tone="limit">
+          <p>
+            This page deliberately does not publish the implementation — no architecture
+            breakdown, no detection logic, no thresholds and no repository link. What is here
+            is meant to show the problem, the judgment and the result. I am happy to walk
+            through any part of the system in detail, including the parts that do not work yet.
+          </p>
+        </Callout>
+      </Section>
+    </div>
+
+    <nav class="toc" aria-label="On this page">
+      <p class="toc__label mono">On this page</p>
+      <ol>
+        {
+          toc.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+    </div>
+  </div>
+
+  <Lightbox />
+</BaseLayout>
+
+<script>
+  const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+  const sections = tocLinks
+    .map((link) => document.querySelector<HTMLElement>(link.hash))
+    .filter((section): section is HTMLElement => Boolean(section));
+
+  if (tocLinks.length > 0 && sections.length > 0 && 'IntersectionObserver' in window) {
+    const sync = (id: string) => {
+      tocLinks.forEach((link) => {
+        link.toggleAttribute('aria-current', link.hash === `#${id}`);
+      });
+    };
+
+    const spy = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target.id) sync(visible.target.id);
+      },
+      { rootMargin: '0px 0px -62% 0px', threshold: [0.1, 0.25, 0.5] },
+    );
+
+    sections.forEach((section) => spy.observe(section));
+  }
+</script>
+
+<style>
+  .case {
+    display: grid;
+    /* `minmax(0, …)` so a wide figure cannot push the column past the viewport. */
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+    padding-bottom: var(--space-8);
+  }
+
+  .case__layout,
+  .case__body {
+    width: 100%;
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-inline: var(--page-pad);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7);
+    min-width: 0;
+  }
+
+  .case__body {
+    padding-inline: 0;
+  }
+
+  /* ----------------------------------------------------------------- hero */
+
+  .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hero__body {
+    position: relative;
+    width: 100%;
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding: clamp(3rem, 1.5rem + 7vw, 6rem) var(--page-pad)
+      clamp(2.5rem, 1.5rem + 5vw, 4.5rem);
+    display: grid;
+    gap: var(--space-6);
+    align-items: center;
+  }
+
+  .hero__copy {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+    min-width: 0;
+  }
+
+  .hero__field {
+    display: none;
+    justify-self: end;
+    pointer-events: none;
+  }
+
+  .hero__title {
+    font-size: clamp(3rem, 1.8rem + 6vw, 6rem);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    background: linear-gradient(
+      100deg,
+      var(--text) 18%,
+      var(--accent-strong) 55%,
+      var(--accent-alt) 95%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero__tagline {
+    font-size: 0.74rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .hero__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .hero__chips li {
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--accent-line);
+    border-radius: 999px;
+    background: var(--accent-wash);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .hero__lede {
+    max-width: 54ch;
+    margin-top: var(--space-2);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+
+  /*
+   * Slow colour drift behind the hero. Transform and opacity only, so it stays
+   * off the main thread, and it is removed entirely for reduced motion.
+   */
+  .hero__aurora {
+    position: absolute;
+    inset: -45% -20% auto;
+    height: 150%;
+    z-index: -1;
+    background:
+      radial-gradient(
+        30rem 20rem at 28% 42%,
+        color-mix(in srgb, var(--accent) 26%, transparent),
+        transparent 68%
+      ),
+      radial-gradient(
+        26rem 18rem at 72% 58%,
+        color-mix(in srgb, var(--accent-alt) 24%, transparent),
+        transparent 66%
+      );
+    filter: blur(14px);
+    opacity: 0.55;
+    animation: drift 26s var(--ease) infinite alternate;
+  }
+
+  @keyframes drift {
+    from {
+      transform: translate3d(-3%, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(3%, 2%, 0) scale(1.09);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__aurora,
+    .hero__scan {
+      animation: none;
+    }
+  }
+
+  .hero__scan {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      color-mix(in srgb, var(--accent) 10%, transparent) 50%,
+      transparent 100%
+    );
+    background-size: 100% 7rem;
+    animation: scan 11s linear infinite;
+    opacity: 0.45;
+  }
+
+  @keyframes scan {
+    from {
+      background-position: 0 -7rem;
+    }
+    to {
+      background-position: 0 calc(100% + 7rem);
+    }
+  }
+
+  @media (min-width: 60rem) {
+    .hero__body {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    }
+
+    .hero__field {
+      display: block;
+    }
+  }
+
+  /* ------------------------------------------------------------------- toc */
+
+  .toc {
+    display: none;
+  }
+
+  @media (min-width: 82rem) {
+    .case__layout {
+      grid-template-columns: minmax(0, 1fr) 11.5rem;
+      align-items: start;
+      column-gap: var(--space-7);
+    }
+
+    .toc {
+      display: grid;
+      gap: var(--space-3);
+      position: sticky;
+      top: 5.5rem;
+      padding-top: 0.2rem;
+    }
+
+    .toc__label {
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    .toc ol {
+      display: grid;
+      gap: 0.15rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      border-left: 1px solid var(--line);
+    }
+
+    .toc a {
+      display: block;
+      padding: 0.28rem 0 0.28rem 0.85rem;
+      color: var(--text-faint);
+      text-decoration: none;
+      font-size: 0.8rem;
+      line-height: 1.35;
+    }
+
+    .toc a:hover,
+    .toc a[aria-current] {
+      color: var(--accent);
+    }
+
+    .toc a[aria-current] {
+      box-shadow: -1px 0 0 var(--accent);
+    }
+  }
+
+  /* ----------------------------------------------------------- principles */
+
+  .principles {
+    display: grid;
+    gap: var(--space-3);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .principles li {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--accent-line);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background: color-mix(in srgb, var(--bg-raised) 72%, transparent);
+  }
+
+  .principles h3 {
+    font-size: 0.97rem;
+  }
+
+  .principles p {
+    max-width: 74ch;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  @media (min-width: 60rem) {
+    .principles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* -------------------------------------------------------------- lessons */
+
+  .lessons {
+    display: grid;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: lesson;
+  }
+
+  .lessons li {
+    display: grid;
+    gap: var(--space-2);
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--line);
+  }
+
+  .lessons li:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .lessons h3 {
+    font-size: 1rem;
+  }
+
+  .lessons h3::before {
+    counter-increment: lesson;
+    content: counter(lesson, decimal-leading-zero);
+    margin-right: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+  }
+
+  .lessons p {
+    max-width: 76ch;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  @media (min-width: 60rem) {
+    .lessons li {
+      grid-template-columns: 18rem minmax(0, 1fr);
+      gap: var(--space-5);
+      align-items: start;
+    }
+  }
+
+  /* --------------------------------------------------------------- limits */
+
+  .limits {
+    display: grid;
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .limits li {
+    padding: var(--space-4) var(--space-5);
+    background: color-mix(in srgb, var(--bg-raised) 86%, transparent);
+    color: var(--text-muted);
+    font-size: 0.88rem;
+  }
+
+  @media print {
+    .hero__field,
+    .hero__aurora,
+    .hero__scan,
+    .toc {
+      display: none !important;
+    }
+
+    .hero__body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

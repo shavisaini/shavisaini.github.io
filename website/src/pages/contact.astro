@@ -1,0 +1,178 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ButtonLink from '../components/ButtonLink.astro';
+import { site } from '../site.config';
+import { href } from '../lib/url';
+---
+
+<BaseLayout
+  title="Contact"
+  description="How to reach Shavi Saini — email and LinkedIn. Open to security engineering and security analyst internships."
+  footerContact={false}
+  page="contact"
+>
+  <div class="page page--narrow contact-page">
+    <PageHeader
+      eyebrow="Contact"
+      title="Get in touch"
+      lede="Email reaches me directly. LinkedIn is the easiest place if you want to connect first — recruiters, students, and people working in the same space are all welcome there."
+    />
+
+    <ul class="channels" data-reveal>
+      <li class="channel channel--primary">
+        <span class="channel__label mono">Email</span>
+        <a class="channel__value" href={`mailto:${site.email}`}>{site.email}</a>
+      </li>
+      <li class="channel">
+        <span class="channel__label mono">LinkedIn</span>
+        <a
+          class="channel__value"
+          href={site.links.linkedin}
+          rel="me noopener noreferrer"
+          target="_blank"
+        >
+          linkedin.com/in/shavisaini
+        </a>
+      </li>
+      <li class="channel">
+        <span class="channel__label mono">Based in</span>
+        <span class="channel__value">{site.location}</span>
+      </li>
+    </ul>
+
+    <div class="linkedin-cta" data-reveal>
+      <p>
+        If you are hiring, studying the same problems, or just want to talk about the work,
+        start on LinkedIn. I read messages there the same way I read email.
+      </p>
+      <ButtonLink href={site.links.linkedin} external rel="me noopener noreferrer">
+        Connect on LinkedIn
+      </ButtonLink>
+    </div>
+
+    <div class="prose contact-page__note" data-reveal>
+      <p>
+        I am looking for <strong>security engineering and security analyst internships</strong>
+        — the kind where the work involves real telemetry and real evidence rather than
+        screenshots of a dashboard.
+      </p>
+      <p>
+        If you are here about <a href={href('/netra/')}>NETRA</a>, I am glad to walk through
+        any part of it, including the parts that do not work yet and the reasoning behind what
+        the system refuses to claim. The <a href={href('/resume/')}>resume</a> has the short
+        version of everything else.
+      </p>
+      <p class="contact-page__privacy">
+        My phone number and home address are not published here. Ask by email and I will send
+        them where they are genuinely needed.
+      </p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .contact-page {
+    padding-bottom: var(--space-8);
+  }
+
+  .channels {
+    display: grid;
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-figure);
+  }
+
+  .channel {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4) var(--space-5);
+    background: var(--bg-raised);
+  }
+
+  .channel--primary {
+    position: relative;
+  }
+
+  .channel--primary::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    animation: signal 3.2s var(--ease) infinite;
+  }
+
+  @keyframes signal {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .channel--primary::before {
+      animation: none;
+      opacity: 1;
+    }
+  }
+
+  .channel__label {
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .channel__value {
+    font-size: 1.02rem;
+    overflow-wrap: anywhere;
+  }
+
+  .contact-page__note {
+    margin-top: var(--space-6);
+  }
+
+  .linkedin-cta {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--bg-raised);
+    max-width: 62ch;
+  }
+
+  .linkedin-cta p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .contact-page__privacy {
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+    color: var(--text-faint);
+    font-size: 0.86rem;
+  }
+
+  @media (min-width: 46rem) {
+    .channel {
+      grid-template-columns: 7rem minmax(0, 1fr);
+      align-items: baseline;
+      gap: var(--space-4);
+    }
+  }
+</style>

@@ -1,0 +1,141 @@
+---
+import '@fontsource-variable/inter/wght.css';
+import '@fontsource-variable/jetbrains-mono/wght.css';
+import '../styles/base.css';
+
+import { getImage } from 'astro:assets';
+
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { site } from '../site.config';
+import { href } from '../lib/url';
+import portrait from '../assets/portrait/shavi-hills.jpg';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Appended after the page title. Omit on the home page. */
+  bare?: boolean;
+  /** Set false on pages that already carry a contact section of their own. */
+  footerContact?: boolean;
+  /**
+   * Names a palette variant on the root element. A scoped page restyles the
+   * header and footer with it too, so the identity is the whole page, not a
+   * band in the middle of one.
+   */
+  scope?: 'netra';
+  /**
+   * Names the page atmosphere. NETRA uses `scope` instead, so it is never
+   * given a `page` value — its visual identity stays distinct.
+   */
+  page?: 'home' | 'about' | 'ctf' | 'certificates' | 'resume' | 'contact' | 'not-found';
+}
+
+const {
+  title,
+  description,
+  bare = false,
+  footerContact = true,
+  scope,
+  page,
+} = Astro.props;
+
+const pageTitle = bare ? title : `${title} · ${site.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://shavisaini.github.io');
+const og = await getImage({
+  src: portrait,
+  width: 800,
+  height: 800,
+  format: 'jpg',
+  quality: 72,
+  fit: 'cover',
+});
+const ogImage = new URL(og.src, canonical).href;
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark" data-scope={scope} data-page={page}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    <link rel="icon" href={href('/favicon.svg')} type="image/svg+xml" />
+    <meta name="author" content={site.name} />
+    <meta name="color-scheme" content="dark light" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content="Portrait of Shavi Saini" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:image" content={ogImage} />
+
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <script is:inline>
+      // Applied before first paint so the chosen theme never flashes.
+      (() => {
+        const stored = localStorage.getItem('theme');
+        const system = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.dataset.theme = stored ?? system;
+      })();
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <SiteHeader />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter contact={footerContact} />
+    <script>
+      /*
+       * Opt into the reveal transition only once this runs, so the content is
+       * never left invisible if the script fails, arrives late, or the reader
+       * has asked for reduced motion.
+       */
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const targets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+
+      if (!reduce && targets.length > 0 && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              entry.target.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.06 },
+        );
+
+        const fold = window.innerHeight * 0.92;
+        targets.forEach((target) => {
+          if (target.getBoundingClientRect().top < fold) {
+            target.classList.add('is-revealed');
+          } else {
+            observer.observe(target);
+          }
+        });
+
+        document.documentElement.dataset.reveal = 'on';
+      }
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  main:focus {
+    outline: none;
+  }
+</style>

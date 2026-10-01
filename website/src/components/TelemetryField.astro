@@ -1,0 +1,94 @@
+---
+/**
+ * Decorative only. A field of observations — not a map of the system.
+ */
+---
+
+<svg
+  class="field"
+  viewBox="0 0 420 320"
+  role="presentation"
+  aria-hidden="true"
+  preserveAspectRatio="xMidYMid meet"
+>
+  <defs>
+    <radialGradient id="node-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="var(--accent-strong)" stop-opacity="0.95"></stop>
+      <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.15"></stop>
+    </radialGradient>
+  </defs>
+
+  <g class="field__links" fill="none" stroke="var(--accent)" stroke-width="0.7">
+    <path d="M48 210 L118 92 L214 148 L286 58 L372 128"></path>
+    <path d="M118 92 L168 248 L286 58"></path>
+    <path d="M48 210 L168 248 L344 236 L372 128"></path>
+    <path d="M214 148 L344 236"></path>
+  </g>
+
+  <g class="field__nodes" fill="url(#node-core)" stroke="var(--accent-strong)" stroke-width="0.8">
+    <circle cx="48" cy="210" r="4.5"></circle>
+    <circle class="field__pulse" cx="118" cy="92" r="5.5"></circle>
+    <circle cx="214" cy="148" r="4"></circle>
+    <circle class="field__pulse" cx="286" cy="58" r="6"></circle>
+    <circle cx="168" cy="248" r="4.2"></circle>
+    <circle cx="344" cy="236" r="4.8"></circle>
+    <circle class="field__pulse" cx="372" cy="128" r="5"></circle>
+  </g>
+</svg>
+
+<style>
+  .field {
+    width: min(100%, 26rem);
+    height: auto;
+    opacity: 0.72;
+  }
+
+  .field__links path {
+    stroke-dasharray: 8 10;
+    animation: travel 18s linear infinite;
+    opacity: 0.45;
+  }
+
+  .field__links path:nth-child(2) {
+    animation-duration: 24s;
+    animation-direction: reverse;
+    opacity: 0.28;
+  }
+
+  .field__pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ping 3.6s var(--ease) infinite;
+  }
+
+  .field__pulse:nth-child(2) {
+    animation-delay: 1.1s;
+  }
+
+  .field__pulse:nth-child(7) {
+    animation-delay: 2.2s;
+  }
+
+  @keyframes travel {
+    to {
+      stroke-dashoffset: -180;
+    }
+  }
+
+  @keyframes ping {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .field__links path,
+    .field__pulse {
+      animation: none;
+    }
+  }
+</style>

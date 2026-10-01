@@ -1,0 +1,6 @@
+# Security contact for this site.
+# A static personal site with no backend, no accounts and no user data.
+
+Contact: mailto:shavisaini2002@gmail.com
+Expires: 2027-12-31T23:59:59.000Z
+Preferred-Languages: en

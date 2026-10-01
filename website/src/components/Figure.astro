@@ -1,0 +1,181 @@
+---
+import { Image, getImage } from 'astro:assets';
+
+interface Props {
+  /** Imported screenshot. */
+  src: ImageMetadata;
+  /** Describes what the screenshot shows, for screen readers. */
+  alt: string;
+  /** The application view the capture came from, shown in the figure header. */
+  label: string;
+  /** Figure number or short tag shown on the right of the header. */
+  tag?: string;
+  /** Eagerly loaded, above the fold. */
+  priority?: boolean;
+}
+
+const { src, alt, label, tag, priority = false } = Astro.props;
+
+// Full-resolution derivative used by the lightbox and by the no-JS fallback.
+const full = await getImage({ src, format: 'webp', quality: 90, width: src.width });
+
+/*
+ * Every figure spans the content column, so one hint describes them all. An
+ * `inset` variant used to exist with a narrower hint and no layout rule behind
+ * it, which only ever made the browser pick a derivative that was too small.
+ */
+const sizes = '(min-width: 74rem) 1100px, 92vw';
+---
+
+<figure class="figure">
+  <div class="figure__frame">
+    <div class="figure__bar">
+      <span class="figure__label">{label}</span>
+      {tag && <span class="figure__tag">{tag}</span>}
+    </div>
+
+    <a
+      class="figure__link"
+      href={full.src}
+      data-lightbox
+      data-alt={alt}
+      aria-label={`View full size: ${label}`}
+    >
+      <Image
+        src={src}
+        alt={alt}
+        sizes={sizes}
+        widths={[640, 960, 1280, 1600, src.width]}
+        quality={82}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding={priority ? 'sync' : 'async'}
+        fetchpriority={priority ? 'high' : 'auto'}
+      />
+      <span class="figure__expand" aria-hidden="true">
+        <svg viewBox="0 0 16 16" width="13" height="13">
+          <path
+            d="M6 2H2v4M10 14h4v-4M14 6V2h-4M2 10v4h4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+        Full size
+      </span>
+    </a>
+  </div>
+
+  <figcaption class="figure__caption">
+    <slot />
+  </figcaption>
+</figure>
+
+<style>
+  .figure {
+    margin: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .figure__frame {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--bg-sunken);
+    overflow: hidden;
+    box-shadow: var(--shadow-figure);
+  }
+
+  .figure__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: 0.5rem 0.85rem;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-raised);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .figure__label {
+    color: var(--text-muted);
+  }
+
+  .figure__tag {
+    color: var(--text-faint);
+    white-space: nowrap;
+  }
+
+  .figure__link {
+    display: block;
+    position: relative;
+    line-height: 0;
+    text-decoration: none;
+  }
+
+  /* The frame clips its own overflow, so it wears the focus ring for the link. */
+  .figure__link:focus-visible {
+    outline: none;
+  }
+
+  .figure__frame:has(.figure__link:focus-visible) {
+    outline: 2px solid var(--accent-strong);
+    outline-offset: 3px;
+  }
+
+  .figure__link :global(img) {
+    width: 100%;
+    height: auto;
+  }
+
+  .figure__expand {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.55rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--bg-raised) 92%, transparent);
+    backdrop-filter: blur(6px);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    opacity: 0;
+    transform: translateY(0.2rem);
+    transition: opacity 160ms var(--ease), transform 160ms var(--ease);
+  }
+
+  .figure__link:hover .figure__expand,
+  .figure__link:focus-visible .figure__expand {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Touch devices have no hover; keep the affordance permanently visible. */
+  @media (hover: none) {
+    .figure__expand {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .figure__caption {
+    max-width: 72ch;
+    color: var(--text-faint);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .figure__caption :global(strong) {
+    color: var(--text-muted);
+    font-weight: 560;
+  }
+</style>

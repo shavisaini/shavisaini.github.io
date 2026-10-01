@@ -1,0 +1,72 @@
+---
+interface Props {
+  id?: string;
+  /** Short monospace marker, e.g. a section number. */
+  index?: string;
+  title: string;
+  /** Renders the heading as `h3` inside an already-nested context. */
+  level?: 2 | 3;
+  /** Removes the top rule, for the first section after a page header. */
+  flush?: boolean;
+}
+
+const { id, index, title, level = 2, flush = false } = Astro.props;
+const Heading = `h${level}` as 'h2' | 'h3';
+---
+
+<section id={id} class:list={['section', flush && 'section--flush']}>
+  <div class="section__head">
+    {index && <span class="section__index" aria-hidden="true">{index}</span>}
+    <Heading class="section__title">{title}</Heading>
+  </div>
+  <div class="section__body">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-top: var(--space-7);
+    border-top: 1px solid var(--line);
+  }
+
+  .section--flush {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .section + :global(.section) {
+    margin-top: var(--space-7);
+  }
+
+  .section__head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+  }
+
+  .section__index {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--text-faint);
+    padding-top: 0.2em;
+  }
+
+  .section__title {
+    margin: 0;
+  }
+
+  .section__body {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  @media (min-width: 60rem) {
+    .section__head {
+      display: grid;
+      grid-template-columns: 3.5rem minmax(0, 1fr);
+      gap: 0;
+    }
+  }
+</style>

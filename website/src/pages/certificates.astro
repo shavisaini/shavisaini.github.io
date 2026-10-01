@@ -1,0 +1,276 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { certificates } from '../data/certificates';
+import { href } from '../lib/url';
+---
+
+<BaseLayout
+  title="Certificates"
+  description="Cybersecurity certificates held by Shavi Saini: the Google Cybersecurity Professional Certificate, a 45-day security internship with an A+ grade, TryHackMe Cyber Security 101 and Pre Security, and the OWASP API Security Top 10."
+  page="certificates"
+>
+  <div class="page page--narrow">
+    <PageHeader
+      eyebrow="Certificates"
+      title="What I have completed"
+      lede="Five certificates, each one attached in full, with a verification link where the issuer published one. Ordered by what they demonstrate, not by how they look."
+    />
+
+    <ul class="certificates">
+      {
+        certificates.map((certificate, index) => (
+          <li
+            class:list={['certificate', 'lift', index === 0 && 'certificate--lead']}
+            data-reveal
+            style={`--reveal-delay: ${index * 70}ms`}
+          >
+            <div class="certificate__head">
+              <div>
+                <h2 class="certificate__title">{certificate.title}</h2>
+                <p class="certificate__issuer">{certificate.issuer}</p>
+              </div>
+              <div class="certificate__stamp">
+                <span class="certificate__kind">{certificate.kind}</span>
+                <span class="certificate__date mono">{certificate.date}</span>
+              </div>
+            </div>
+
+            <p class="certificate__summary">{certificate.summary}</p>
+
+            {certificate.components && (
+              <details class="courses">
+                <summary>
+                  <span>{certificate.components.length} component courses</span>
+                </summary>
+                <ul>
+                  {certificate.components.map((course) => (
+                    <li>
+                      <a href={course.url} rel="noopener noreferrer" target="_blank">
+                        {course.title}
+                      </a>
+                      <span class="mono">{course.date}</span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            )}
+
+            <p class="certificate__links">
+              {certificate.verify && (
+                <a href={certificate.verify.url} rel="noopener noreferrer" target="_blank">
+                  {certificate.verify.label}
+                </a>
+              )}
+              {certificate.file && (
+                <a href={href(certificate.file)} rel="noopener noreferrer" target="_blank">
+                  View certificate
+                </a>
+              )}
+              {certificate.credentialId && (
+                <span class="certificate__id mono">{certificate.credentialId}</span>
+              )}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="archive-note" data-reveal>
+      Further completion certificates — the individual Google course certificates listed
+      above, and general AI and productivity workshops that are not security certificates —
+      are kept in my archive rather than shown here. They are available on request.
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .certificates {
+    display: grid;
+    gap: var(--space-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .certificate {
+    display: grid;
+    gap: var(--space-3);
+    position: relative;
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-left-width: 2px;
+    border-left-color: var(--line-strong);
+    border-radius: var(--radius-lg);
+    background: var(--bg-raised);
+  }
+
+  .certificate--lead {
+    padding: var(--space-6);
+    box-shadow: var(--shadow-figure);
+    border-left-color: var(--accent);
+  }
+
+  .certificate__head {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .certificate__title {
+    font-size: 1.15rem;
+  }
+
+  .certificate--lead .certificate__title {
+    font-size: 1.28rem;
+  }
+
+  .certificate__issuer {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .certificate__stamp {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-3);
+  }
+
+  .certificate__kind {
+    padding: 0.12rem 0.5rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    background: var(--bg-sunken);
+  }
+
+  .certificate--lead .certificate__kind {
+    border-color: var(--accent-line);
+    color: var(--accent-strong);
+    background: var(--accent-wash);
+  }
+
+  .certificate__date {
+    font-size: 0.78rem;
+    color: var(--text-faint);
+  }
+
+  .certificate__summary {
+    max-width: 68ch;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+
+  .certificate__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-5);
+    font-size: 0.86rem;
+  }
+
+  .certificate__id {
+    font-size: 0.72rem;
+    color: var(--text-faint);
+  }
+
+  /* ---------------------------------------------------- component courses */
+
+  .courses {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+  }
+
+  .courses summary {
+    padding: var(--space-3) var(--space-4);
+    cursor: pointer;
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .courses summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .courses summary::before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 4px solid currentColor;
+    border-block: 3.5px solid transparent;
+    transition: transform 160ms var(--ease);
+  }
+
+  .courses[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  .courses summary:hover {
+    color: var(--text);
+  }
+
+  .courses ul {
+    display: grid;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0 var(--space-4) var(--space-3);
+  }
+
+  .courses li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+    padding-block: var(--space-2);
+    border-top: 1px solid var(--line);
+    font-size: 0.85rem;
+  }
+
+  .courses li span {
+    font-size: 0.72rem;
+    color: var(--text-faint);
+  }
+
+  .archive-note {
+    max-width: 68ch;
+    margin-top: var(--space-6);
+    padding-bottom: var(--space-8);
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: var(--text-faint);
+  }
+
+  @media (min-width: 46rem) {
+    .certificate {
+      gap: var(--space-4);
+    }
+
+    .certificate--lead {
+      padding: var(--space-7) var(--space-6);
+    }
+
+    .certificate__head {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: var(--space-5);
+    }
+
+    .certificate__stamp {
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--space-2);
+      text-align: right;
+    }
+  }
+</style>
